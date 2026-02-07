@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer Registration</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg,#56ab2f,#a8e063);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2f855a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #276749;
+        }
+
+        .msg {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .success { color: green; }
+        .error { color: red; }
+
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+    <h2>Farmer Registration</h2>
+
+    <input type="text" id="username" placeholder="Farmer Name" required>
+    <input type="password" id="password" placeholder="Choose Password" required>
+    <input type="text" id="phone" placeholder="Phone Number" required>
+    <input type="text" id="location" placeholder="Location" required>
+
+    <button onclick="register()">Register</button>
+
+    <p id="msg" class="msg"></p>
+
+</div>
+
+<script>
+
+function register() {
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const phone = document.getElementById("phone").value;
+    const location = document.getElementById("location").value;
+
+    fetch("/api/auth/register/farmer", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password,
+            phoneNumber: phone,
+            location: location
+        })
+    })
+    .then(response => {
+
+        if (response.ok) {
+
+            document.getElementById("msg").innerHTML =
+                "<span class='success'>Registration successful! Redirecting to login...</span>";
+
+            sessionStorage.setItem("registerSuccess", "true");
+
+            setTimeout(() => {
+                window.location.href = "farmer-login.html";
+            }, 1500);
+
+        } else {
+            throw new Error();
+        }
+
+    })
+    .catch(() => {
+        document.getElementById("msg").innerHTML =
+            "<span class='error'>Registration failed. Try different username.</span>";
+    });
+}
+
+</script>
+
+</body>
+</html>

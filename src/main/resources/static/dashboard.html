@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager - Dashboard</title>
+    <style>
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        .form-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f7f9fc;
+            border-radius: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: none;
+            height: 70px;
+        }
+
+        .task-list {
+            margin-top: 25px;
+        }
+
+        .task-card {
+            background: #f4f6ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+
+        .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .status {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .OPEN { background: #ffe58f; color: #ad8b00; }
+        .IN_PROGRESS { background: #bae7ff; color: #0050b3; }
+        .COMPLETED { background: #b7eb8f; color: #237804; }
+
+        #msg {
+            color: green;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="top-bar">
+        <h2>Welcome, <span id="user"></span></h2>
+        <button class="btn-danger" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="form-section">
+        <h3>Create New Task</h3>
+
+        <input type="text" id="title" placeholder="Task Title">
+
+        <textarea id="description" placeholder="Task Description"></textarea>
+
+        <select id="status">
+            <option value="OPEN">OPEN</option>
+            <option value="IN_PROGRESS">IN_PROGRESS</option>
+            <option value="COMPLETED">COMPLETED</option>
+        </select>
+
+        <button class="btn-primary" onclick="createTask()">Create Task</button>
+
+        <p id="msg"></p>
+    </div>
+
+    <div class="task-list">
+        <h3>Your Tasks</h3>
+        <button class="btn-primary" onclick="loadTasks()">Load Tasks</button>
+
+        <div id="taskList"></div>
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("user").innerText =
+    localStorage.getItem("username");
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+function createTask() {
+
+    const userId = localStorage.getItem("userId");
+
+    fetch("/api/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            title: document.getElementById("title").value,
+            description: document.getElementById("description").value,
+            status: document.getElementById("status").value,
+            userId: userId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("msg").innerText =
+            "Task created successfully!";
+        loadTasks();
+    });
+}
+
+function loadTasks() {
+
+    const userId = localStorage.getItem("userId");
+
+    fetch(`/api/tasks/${userId}`)
+        .then(res => res.json())
+        .then(tasks => {
+
+            let list = document.getElementById("taskList");
+            list.innerHTML = "";
+
+            tasks.forEach(task => {
+
+                let card = document.createElement("div");
+                card.className = "task-card";
+
+                card.innerHTML = `
+                    <strong>${task.title}</strong><br>
+                    ${task.description}<br>
+                    <span class="status ${task.status}">
+                        ${task.status}
+                    </span>
+                `;
+
+                list.appendChild(card);
+            });
+        });
+}
+
+</script>
+
+</body>
+</html>

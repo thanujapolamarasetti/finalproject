@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer Login</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg,#56ab2f,#a8e063);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #2f855a;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2f855a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #276749;
+        }
+
+        .link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .link a {
+            color: #2f855a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Farmer Login</h2>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <div class="link">
+        New Farmer? <a href="farmer-register.html">Register Here</a>
+    </div>
+
+    <p id="error" class="error"></p>
+
+</div>
+
+<script>
+function login() {
+
+    fetch("/api/auth/login", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        })
+    })
+    .then(res => {
+        if(!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(data => {
+
+        if(data.role !== "FARMER") {
+            document.getElementById("error").innerText =
+                "Not a Farmer account!";
+            return;
+        }
+
+        localStorage.setItem("userId", data.userId);
+        localStorage.setItem("username", data.username);
+
+        window.location.href = "farmer-dashboard.html";
+    })
+    .catch(() => {
+        document.getElementById("error").innerText =
+            "Invalid credentials!";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    if(sessionStorage.getItem("registerSuccess")) {
+
+        document.getElementById("error").innerHTML =
+            "<span style='color:green;'>Registration successful! Please login.</span>";
+
+        sessionStorage.removeItem("registerSuccess");
+    }
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AgriTask System</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            width: 600px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 40px;
+            color: #555;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .card {
+            width: 220px;
+            padding: 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            color: white;
+        }
+
+        .farmer {
+            background: linear-gradient(135deg,#56ab2f,#a8e063);
+        }
+
+        .admin {
+            background: linear-gradient(135deg,#667eea,#764ba2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .card h3 {
+            margin: 15px 0 5px;
+        }
+
+        .icon {
+            font-size: 40px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Farmer-Agri & Task Manager System</h1>
+    <p>Select your portal to continue</p>
+
+    <div class="options">
+
+        <div class="card farmer"
+             onclick="window.location.href='farmer-login.html'">
+
+            <div class="icon"></div>
+            <h3>Farmer Portal</h3>
+            <p>Manage Crops & Sales</p>
+
+        </div>
+
+        <div class="card admin"
+             onclick="window.location.href='login.html'">
+
+            <div class="icon"></div>
+            <h3>Admin / Task Portal</h3>
+            <p>Manage Tasks & Users</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
